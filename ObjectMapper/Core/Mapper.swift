@@ -261,13 +261,16 @@ public final class Mapper<N: Mappable> {
 	
 	/// Convert a JSON Object into a Dictionary<String, AnyObject> using NSJSONSerialization
 	public static func parseJSONDictionary(JSON: AnyObject?) -> [String : AnyObject]? {
-		if let JSONDict = JSON as? [String : AnyObject] {
-			return JSONDict
+		switch JSON {
+		case let dict as [String: AnyObject]:
+			return dict
+		case let arr as [[String: AnyObject]]:
+			return arr.count != 0 ? arr[0] : [:]
+		default:
+			return nil
 		}
-
-		return nil
 	}
-
+	
 	/// Convert a JSON String into an Object using NSJSONSerialization
 	public static func parseJSONString(JSON: String) -> AnyObject? {
 		let data = JSON.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
